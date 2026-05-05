@@ -5,74 +5,104 @@
 }
 
 body {
-  font-family: Arial, sans-serif;
-  background-color: #f0f4f8;
-  display: flex;
-  justify-content: center;
-  padding: 40px 16px;
+  /* -apple-system picks up San Francisco on iPhones automatically */
+  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+  background-color: #f2f2f7; /* iOS system grouped background */
+  min-height: 100vh;
+  /* Respects the iPhone notch and home bar */
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 
 .container {
-  background-color: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  padding: 32px;
-  width: 100%;
-  max-width: 500px;
+  max-width: 430px;   /* Fits an iPhone 14 Pro Max without wasted space */
+  margin: 0 auto;
+  padding: 0 20px 48px;
+}
+
+/* ── Header ── */
+header {
+  padding: 48px 0 28px;
 }
 
 h1 {
-  font-size: 1.8rem;
-  color: #2d3748;
-  margin-bottom: 24px;
-  text-align: center;
+  font-size: 2.4rem;
+  font-weight: 700;
+  color: #000000;
+  letter-spacing: -0.5px;
 }
 
+/* ── Input row ── */
 .input-area {
   display: flex;
-  gap: 8px;
+  align-items: center;
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 4px 4px 4px 16px;
   margin-bottom: 24px;
 }
 
 #taskInput {
   flex: 1;
-  padding: 10px 14px;
-  font-size: 1rem;
-  border: 1px solid #cbd5e0;
-  border-radius: 6px;
+  border: none;
   outline: none;
+  font-family: inherit;
+  font-size: 1rem;
+  color: #000000;
+  background: transparent;
+  padding: 12px 8px 12px 0;
+  /* min-height ensures a comfortable tap target on iOS (Apple recommends 44px) */
+  min-height: 44px;
 }
 
-#taskInput:focus {
-  border-color: #4a90e2;
+#taskInput::placeholder {
+  color: #8e8e93; /* iOS secondary label color */
 }
 
 #addBtn {
-  padding: 10px 18px;
-  font-size: 1rem;
-  background-color: #4a90e2;
+  background-color: #000000;
   color: #ffffff;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
+  padding: 0 18px;
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 600;
   cursor: pointer;
+  /* 44px is Apple's minimum recommended tap target size */
+  min-height: 44px;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
-#addBtn:hover {
-  background-color: #357abd;
+/* iOS-style: darken slightly when tapped instead of hover color change */
+#addBtn:active {
+  opacity: 0.7;
 }
 
+/* ── Task list ── */
 #taskList {
   list-style: none;
+  background-color: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* Hide the card entirely when there are no tasks */
+#taskList:empty {
+  display: none;
 }
 
 #taskList li {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 14px;
-  border-bottom: 1px solid #e2e8f0;
+  padding: 0 16px;
+  min-height: 52px;   /* Generous touch target height */
   font-size: 1rem;
-  color: #4a5568;
+  color: #000000;
+  /* Inset separator like iOS table view rows */
+  border-bottom: 1px solid #e5e5ea;
 }
 
 #taskList li:last-child {
@@ -82,12 +112,18 @@ h1 {
 .delete-btn {
   background: none;
   border: none;
-  color: #e53e3e;
+  color: #c7c7cc;     /* Subtle gray so it doesn't compete with the task text */
   font-size: 1.1rem;
   cursor: pointer;
-  padding: 0 4px;
+  /* Large tap area even though the icon is small */
+  min-width: 44px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-shrink: 0;
 }
 
-.delete-btn:hover {
-  color: #c53030;
+.delete-btn:active {
+  color: #ff3b30;     /* iOS system red on tap */
 }

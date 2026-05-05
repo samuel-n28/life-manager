@@ -2,21 +2,28 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <!-- Keeps the layout at the device's natural width — no zooming in on mobile -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Life Manager</title>
+    <!-- Makes the app feel native when saved to the iPhone home screen -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <title>Foundation</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
     <div class="container">
-      <h1>Life Manager</h1>
+      <header>
+        <h1>Foundation</h1>
+      </header>
 
       <div class="input-area">
         <input
           type="text"
           id="taskInput"
-          placeholder="Enter a task..."
+          placeholder="New task..."
+          autocomplete="off"
         />
-        <button id="addBtn">Add Task</button>
+        <button id="addBtn">Add</button>
       </div>
 
       <ul id="taskList"></ul>
