@@ -2,11 +2,12 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <!-- Keeps the layout at the device's natural width — no zooming in on mobile -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <!-- Makes the app feel native when saved to the iPhone home screen -->
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="theme-color" content="#f2f2f7" />
+    <link rel="manifest" href="manifest.json" />
+    <link rel="apple-touch-icon" href="/icon-180.png" />
     <title>Foundation</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
@@ -14,21 +15,54 @@
     <div class="container">
       <header>
         <h1>Foundation</h1>
+        <p id="dateSubtitle" class="date-subtitle"></p>
       </header>
 
-      <div class="input-area">
-        <input
-          type="text"
-          id="taskInput"
-          placeholder="New task..."
-          autocomplete="off"
-        />
-        <button id="addBtn">Add</button>
+      <!-- Tasks section -->
+      <div id="section-tasks">
+        <div class="tab-bar">
+          <button class="tab-btn" data-tab="yesterday" onclick="switchTab('yesterday')">Yesterday</button>
+          <button class="tab-btn" data-tab="today" onclick="switchTab('today')">Today</button>
+          <button class="tab-btn" data-tab="tomorrow" onclick="switchTab('tomorrow')">Tomorrow</button>
+          <button class="tab-btn" data-tab="all" onclick="switchTab('all')">All</button>
+        </div>
+        <div class="input-area">
+          <input
+            type="text"
+            id="taskInput"
+            placeholder="New task..."
+            autocomplete="off"
+          />
+          <button id="addBtn">Add</button>
+        </div>
+        <ul id="taskList"></ul>
       </div>
 
-      <ul id="taskList"></ul>
+      <!-- Habits section -->
+      <div id="section-habits" style="display: none">
+        <div class="input-area">
+          <input
+            type="text"
+            id="habitInput"
+            placeholder="New habit..."
+            autocomplete="off"
+          />
+          <button id="addHabitBtn">Add</button>
+        </div>
+        <ul id="habitList"></ul>
+      </div>
     </div>
 
+    <nav class="bottom-nav">
+      <button class="nav-btn active" data-section="tasks" onclick="switchSection('tasks')">Tasks</button>
+      <button class="nav-btn" data-section="habits" onclick="switchSection('habits')">Habits</button>
+    </nav>
+
     <script src="script.js"></script>
+    <script>
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.register("/sw.js");
+      }
+    </script>
   </body>
 </html>
