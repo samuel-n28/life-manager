@@ -250,3 +250,20 @@ h1 {
 .nav-btn:active {
   opacity: 0.7;
 }
+
+/* ── Streak badge ── */
+.streak-badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #8e8e93;
+  background-color: #f2f2f7;
+  border-radius: 6px;
+  padding: 2px 7px;
+  margin-right: 4px;
+  flex-shrink: 0;
+}
+
+#habitList li.done .streak-badge {
+  color: #34c759;
+  background-color: #e8faec;
+}

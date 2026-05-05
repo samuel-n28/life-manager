@@ -26,6 +26,13 @@ function loadFromStorage() {
   var savedHabits = localStorage.getItem("foundation-habits");
   if (savedHabits) {
     habits = JSON.parse(savedHabits);
+    // Migrate old habits that used lastDone instead of doneHistory
+    habits.forEach(function (habit) {
+      if (!habit.doneHistory) {
+        habit.doneHistory = habit.lastDone ? [habit.lastDone] : [];
+        delete habit.lastDone;
+      }
+    });
   }
 }
 
@@ -152,6 +159,30 @@ taskInput.addEventListener("keydown", function (event) {
   if (event.key === "Enter") addTask();
 });
 
+// ── Habits: Streak ────────────────────────────────────────────────────────────
+function computeStreak(history) {
+  if (history.length === 0) return 0;
+
+  var historySet = {};
+  history.forEach(function (d) { historySet[d] = true; });
+
+  var today = dateString(0);
+  var yesterday = dateString(-1);
+  var cursor = historySet[today] ? today : historySet[yesterday] ? yesterday : null;
+  if (!cursor) return 0;
+
+  var streak = 0;
+  while (historySet[cursor]) {
+    streak++;
+    var parts = cursor.split("-");
+    var d = new Date(+parts[0], +parts[1] - 1, +parts[2] - 1);
+    cursor = d.getFullYear() + "-" +
+      String(d.getMonth() + 1).padStart(2, "0") + "-" +
+      String(d.getDate()).padStart(2, "0");
+  }
+  return streak;
+}
+
 // ── Habits: Rendering ─────────────────────────────────────────────────────────
 var habitList = document.getElementById("habitList");
 
@@ -169,7 +200,8 @@ function renderHabits() {
   var today = dateString(0);
 
   habits.forEach(function (habit, index) {
-    var done = habit.lastDone === today;
+    var done = habit.doneHistory.indexOf(today) !== -1;
+    var streak = computeStreak(habit.doneHistory);
 
     var li = document.createElement("li");
     if (done) li.classList.add("done");
@@ -179,7 +211,11 @@ function renderHabits() {
     checkBtn.textContent = done ? "✓" : "";
     checkBtn.setAttribute("aria-label", "Mark habit complete");
     checkBtn.onclick = function () {
-      habits[index].lastDone = done ? null : today;
+      if (done) {
+        habits[index].doneHistory = habits[index].doneHistory.filter(function (d) { return d !== today; });
+      } else {
+        habits[index].doneHistory.push(today);
+      }
       saveToStorage();
       renderHabits();
     };
@@ -188,10 +224,26 @@ function renderHabits() {
     span.className = "task-text";
     span.textContent = habit.text;
     span.onclick = function () {
-      habits[index].lastDone = done ? null : today;
+      if (done) {
+        habits[index].doneHistory = habits[index].doneHistory.filter(function (d) { return d !== today; });
+      } else {
+        habits[index].doneHistory.push(today);
+      }
       saveToStorage();
       renderHabits();
     };
+
+    if (streak > 0) {
+      var streakBadge = document.createElement("span");
+      streakBadge.className = "streak-badge";
+      streakBadge.textContent = streak + "d";
+      li.appendChild(checkBtn);
+      li.appendChild(span);
+      li.appendChild(streakBadge);
+    } else {
+      li.appendChild(checkBtn);
+      li.appendChild(span);
+    }
 
     var deleteBtn = document.createElement("button");
     deleteBtn.className = "delete-btn";
@@ -203,8 +255,6 @@ function renderHabits() {
       renderHabits();
     };
 
-    li.appendChild(checkBtn);
-    li.appendChild(span);
     li.appendChild(deleteBtn);
     habitList.appendChild(li);
   });
@@ -221,7 +271,7 @@ function addHabit() {
     return;
   }
 
-  habits.push({ id: Date.now(), text: text, lastDone: null });
+  habits.push({ id: Date.now(), text: text, doneHistory: [] });
   saveToStorage();
   renderHabits();
 
