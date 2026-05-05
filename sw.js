@@ -1,11 +1,11 @@
-var CACHE_NAME = "foundation-v4";
+var CACHE_NAME = "foundation-v5";
 var FILES_TO_CACHE = [
-  "/",
-  "/index.html",
-  "/styles.css",
-  "/script.js",
-  "/manifest.json",
-  "/icon-180.png"
+  ".",
+  "./index.html",
+  "./styles.css",
+  "./script.js",
+  "./manifest.json",
+  "./icon-180.png"
 ];
 
 self.addEventListener("install", function (event) {
